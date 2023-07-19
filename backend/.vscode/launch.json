@@ -1,0 +1,11 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "command": "npm run dev:back",
+      "name": "Run dev back",
+      "request": "launch",
+      "type": "node-terminal"
+    }
+  ]
+}
