@@ -1,0 +1,17 @@
+export enum StatusCode {
+  OK = 200,
+  BAD_REQUEST = 400,
+  UNAUTHORZIED = 401,
+  FORBIDDEN = 403,
+  NOT_FOUND = 404,
+  FORM_ERROR = 422,
+  INTERNAL_SERVER = 500,
+  NO_CONTENT = 204
+}
+
+export enum AuthorityRole {
+  ADMIN = 'ADMIN',
+  MANAGER = 'MANAGER',
+  USER = 'USER',
+  ANONYMOUS = 'ANONYMOUS'
+}
