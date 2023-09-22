@@ -7,14 +7,37 @@ import UserSchema from '~/models/user.model'
 import { User } from '~/models/interface/user.interface'
 
 const authMiddleware = {
-  verifyToken: async (req: Request, res: Response, next: NextFunction) => {
+  requireToken: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (req.headers.authorization?.startsWith('Bearer')) {
+        const token = req.headers.authorization?.split(' ')[1]
+
+        if (token) {
+          const decoded = jwt.decode(token)
+          const user = await UserSchema.findById<User>((decoded as any).id)
+          req.user = user!
+          next()
+        }
+      } else {
+        throw new AppError({
+          httpCode: StatusCode.UNAUTHORZIED,
+          description: 'Not authenticated'
+        })
+      }
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  verifyRefreshToken: async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.headers.authorization?.startsWith('Bearer')) {
         const token = req.headers.authorization?.split(' ')[1]
 
         try {
           if (token) {
-            const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET as string)
+            jwt.verify(token, process.env.JWT_REFRESH as string)
+            const decoded = jwt.decode(token)
             const user = await UserSchema.findById<User>((decoded as any).id)
             req.user = user!
             next()
@@ -22,13 +45,43 @@ const authMiddleware = {
         } catch (error) {
           throw new AppError({
             httpCode: StatusCode.FORBIDDEN,
-            description: 'access-token hết hạn, đang tiến hành refresh'
+            description: 'Bạn đã hết phiên đăng nhập. Tiến hành đăng xuất'
           })
         }
       } else {
         throw new AppError({
-          httpCode: StatusCode.BAD_REQUEST,
-          description: 'Bạn không có quyền (access-token) để thực hiện chức năng này'
+          httpCode: StatusCode.UNAUTHORZIED,
+          description: 'Not authenticated'
+        })
+      }
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  verifyAccessToken: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (req.headers.authorization?.startsWith('Bearer')) {
+        const token = req.headers.authorization?.split(' ')[1]
+
+        try {
+          if (token) {
+            jwt.verify(token, process.env.JWT_ACCESS as string)
+            const decoded = jwt.decode(token)
+            const user = await UserSchema.findById<User>((decoded as any).id)
+            req.user = user!
+            next()
+          }
+        } catch (error) {
+          throw new AppError({
+            httpCode: StatusCode.FORBIDDEN,
+            description: 'AccessToken hết hạn, đang tiến hành refresh'
+          })
+        }
+      } else {
+        throw new AppError({
+          httpCode: StatusCode.UNAUTHORZIED,
+          description: 'Not authenticated'
         })
       }
     } catch (error) {
@@ -39,8 +92,9 @@ const authMiddleware = {
   isAdmin: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const user = req.user
-      if (user.authority !== AuthorityRole.ADMIN) {
-        throw new AppError({ httpCode: StatusCode.BAD_REQUEST, description: 'Bạn không có quyền để thực hiện' })
+
+      if (user && user.authority !== AuthorityRole.ADMIN) {
+        throw new AppError({ httpCode: StatusCode.UNAUTHORZIED, description: 'Not admin' })
       } else {
         next()
       }

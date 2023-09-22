@@ -11,10 +11,11 @@ const notFound = (req: Request, res: Response, next: NextFunction) => {
 // error handler
 const errorHandler = (error: AppError, req: Request, res: Response, next: NextFunction) => {
   const statusCode = error.httpCode ? error.httpCode : 500
+
+  const { isOperational, name, ...other } = error
+
   return res.status(statusCode).json({
-    status: statusCode,
-    message: error.message,
-    stack: error.stack
+    error: other
   })
 }
 

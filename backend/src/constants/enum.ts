@@ -1,5 +1,6 @@
 export enum StatusCode {
   OK = 200,
+  CREATED = 201,
   BAD_REQUEST = 400,
   UNAUTHORZIED = 401,
   FORBIDDEN = 403,
@@ -14,4 +15,12 @@ export enum AuthorityRole {
   MANAGER = 'MANAGER',
   USER = 'USER',
   ANONYMOUS = 'ANONYMOUS'
+}
+
+export enum OrderBy {
+  // popularity = 'popularity',
+  rating = 'rating',
+  date = 'date',
+  price = 'price',
+  price_desc = 'price-desc'
 }

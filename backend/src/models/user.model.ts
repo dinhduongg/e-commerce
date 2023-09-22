@@ -5,19 +5,13 @@ import { User as IUser } from './interface/user.interface'
 
 const userSchema: Schema<IUser> = new Schema(
   {
-    firstname: {
-      type: String
-    },
-    lastname: {
-      type: String
-    },
-    email: {
+    fullname: {
       type: String
     },
     mobile: {
       type: String
     },
-    username: {
+    email: {
       type: String,
       required: true
     },
@@ -34,7 +28,7 @@ const userSchema: Schema<IUser> = new Schema(
       type: String
     }
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false, collection: 'users' }
 )
 
 userSchema.pre('save', async function (next) {
@@ -44,4 +38,4 @@ userSchema.pre('save', async function (next) {
   next()
 })
 
-export default model<IUser>('UserSchema', userSchema, 'users')
+export default model<IUser>('UserSchema', userSchema)

@@ -2,10 +2,9 @@ import { AuthorityRole } from '~/constants/enum'
 
 export interface User {
   _id?: string
-  username: string
+  // username: string
   password: string
-  firstname: string
-  lastname: string
+  fullname: string
   email: string
   mobile: string
   authority: AuthorityRole
@@ -13,6 +12,8 @@ export interface User {
 }
 
 export interface Credentials {
-  username: string
+  fullname: string
+  email: string
   password: string
+  confirm_password: string
 }

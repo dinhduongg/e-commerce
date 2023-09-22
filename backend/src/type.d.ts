@@ -1,4 +1,5 @@
 import { User } from '~/models/interface/user.interface'
+import { AuthorityRole } from '~/constants/enum'
 
 declare global {
   namespace Express {
@@ -10,6 +11,7 @@ declare global {
 
 declare module 'jsonwebtoken' {
   export interface JwtPayload {
-    id: string
+    _id: string
+    authority: AuthorityRole
   }
 }

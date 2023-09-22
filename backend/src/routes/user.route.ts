@@ -5,14 +5,10 @@ import authMiddleware from '~/middlewares/auth.middleware'
 
 const router: Router = Router()
 
-router.post('/register', userController.createUser)
-router.post('/login', userController.loginUser)
-router.get('/logout', userController.logOut)
-
-router.get('/all-users', userController.getAllUsers)
-router.get('/refresh-access', userController.refreshAccessToken)
+router.get('/all-users', authMiddleware.verifyAccessToken, userController.getAllUsers)
 router.get('/:username', userController.getUser)
-router.patch('/update', authMiddleware.verifyToken, userController.updateUser)
-router.delete('/:username', authMiddleware.verifyToken, authMiddleware.isAdmin, userController.deleteUser)
+router.patch('/update', authMiddleware.verifyAccessToken, userController.updateUser)
+router.delete('/:username', authMiddleware.verifyAccessToken, authMiddleware.isAdmin, userController.deleteUser)
+router.get('/refresh-access', userController.refreshAccessToken)
 
 export default router

@@ -3,15 +3,7 @@ import { NextFunction, Request, Response } from 'express'
 import userService from '~/services/user.service'
 
 const userController = {
-  createUser: async (req: Request, res: Response, next: NextFunction) => {
-    await userService.createUser(req, res, next)
-  },
-
-  loginUser: async (req: Request, res: Response, next: NextFunction) => {
-    await userService.loginUser(req, res, next)
-  },
-
-  getAllUsers: async (req: Request, res: Response, next: NextFunction) => {
+  getAllUsers: async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     await userService.getAllUsers(req, res, next)
   },
 
@@ -29,10 +21,6 @@ const userController = {
 
   refreshAccessToken: async (req: Request, res: Response, next: NextFunction) => {
     await userService.refreshAccessToken(req, res, next)
-  },
-
-  logOut: async (req: Request, res: Response, next: NextFunction) => {
-    await userService.logOut(req, res, next)
   }
 }
 
