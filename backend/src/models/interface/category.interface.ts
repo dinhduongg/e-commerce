@@ -9,6 +9,7 @@ export interface Category {
   name: string
   slug: string
   featured: boolean
+  isParent: boolean
   image?: string
   sorted: number
   commom_field: string

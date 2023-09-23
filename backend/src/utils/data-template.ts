@@ -31,7 +31,8 @@ export const productTemplate: Product = {
 }
 
 export const categoryTemplate: Category = {
-  featured: true,
+  featured: false,
+  isParent: false,
   name: '',
   slug: '',
   sorted: 1,

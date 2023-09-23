@@ -201,13 +201,15 @@ const authService = {
       const hashedEmail = await bcrypt.hash(user.email, 10)
 
       const template = `<h3 style="margin-bottom: 12px; font-size: 16px; font-weight: bold">Bạn đã gửi yêu cầu đổi mật khẩu trên website <a style="text-color: blue;" href="${process.env.APP_URL}">${process.env.APP_NAME}</a></h3>
-      <div style="text-color: red">Lưu ý: Bạn có 30 phút kể từ khi nhận mail này để đổi mật khẩu</div>
+      <span style="text-color: red; font-size: 16px">Lưu ý: Bạn có 30 phút kể từ khi nhận mail này để đổi mật khẩu</span>
     <a href="${process.env.APP_URL}/password/reset?email=${user.email}&token=${hashedEmail}&expried=${expried}">Đổi mật khẩu</a>
     `
 
       sendEmail(user.email, 'Quên mật khẩu', template)
         .then(() => console.log(hashedEmail))
-        .catch((error) => console.log('Lỗi khi gửi email', error))
+        .catch((error) => {
+          throw new AppError(error)
+        })
 
       const options: options = {
         statusCode: StatusCode.OK,

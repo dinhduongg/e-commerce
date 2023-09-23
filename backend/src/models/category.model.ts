@@ -12,6 +12,9 @@ const categorySchema: Schema<ICategory> = new Schema(
     featured: {
       type: Boolean
     },
+    isParent: {
+      type: Boolean
+    },
     image: {
       type: String
     },

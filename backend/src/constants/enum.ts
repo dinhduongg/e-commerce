@@ -24,3 +24,11 @@ export enum OrderBy {
   price = 'price',
   price_desc = 'price-desc'
 }
+
+export enum CommonFieldEnum {
+  color = 'color',
+  type = 'type',
+  taste = 'taste',
+  original = 'original',
+  weight = 'weight'
+}
