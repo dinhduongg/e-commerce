@@ -242,7 +242,7 @@ const authService = {
       if (date > expried) {
         throw new AppError({
           httpCode: StatusCode.BAD_REQUEST,
-          description: 'Thời gian đổi mật khẩu đã hết. Mời đổi lại'
+          description: 'Thời gian đổi mật khẩu đã hết.'
         })
       }
 
@@ -251,7 +251,7 @@ const authService = {
       if (!result) {
         throw new AppError({
           httpCode: StatusCode.INTERNAL_SERVER,
-          description: 'Có lỗi mời bạn thử lại'
+          description: 'Có lỗi mời thử lại'
         })
       }
 
