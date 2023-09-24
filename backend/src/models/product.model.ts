@@ -1,65 +1,75 @@
 import { Schema, model } from 'mongoose'
-import { Product as IProduct } from './interface/product.interface'
+import { new_product } from './interface/product.interface'
 
-const productSchema: Schema<IProduct> = new Schema(
+const productSchema: Schema<new_product> = new Schema(
   {
-    name: {
-      type: String,
-      required: true,
-      trim: true
+    name: { type: String },
+    slug: { type: String },
+    comment_count: { type: Number },
+    discount: {
+      money: { type: Number },
+      percent: { type: Number }
     },
-    slug: {
-      type: String,
-      trim: true
+    show_price: {
+      min: { type: Number || null },
+      max: { type: Number || null },
+      original: { type: Number || null },
+      discounted: { type: Number || null },
+      inventory: { type: Number || null }
     },
-    image: {
-      type: String,
-      required: true
+    category_id: {
+      type: Schema.Types.ObjectId,
+      ref: 'CategorySchema'
     },
-    description: {
-      type: String
-    },
-    originalPrice: {
-      type: Number,
-      required: true
-    },
-    currentPrice: {
-      type: Number
-    },
-    discountPercent: {
-      type: Number
-    },
-    discountMoney: {
-      type: Number
-    },
-    quantity: {
-      type: Number,
-      required: true
-    },
-    categories: [
-      // {
-      //   type: Schema.Types.ObjectId,
-      //   ref: 'CategorySchema'
-      // }
-      { type: String }
-    ],
-    tags: [
-      // {
-      //   type: Schema.Types.ObjectId,
-      //   ref: 'TagSchema'
-      // }
-      { type: String }
-    ],
-    rating: {
-      star: {
-        type: Number
-      },
-      totalReview: {
-        type: Number
+    tags: [{ type: Schema.Types.ObjectId, ref: 'CategorySchema' }],
+    description: { type: String },
+    rating: { type: Number },
+    rating_count: { type: Number },
+    product_property: [{ type: String }],
+    color_price: [
+      {
+        field: { type: Schema.Types.ObjectId, ref: 'CommonField' },
+        defaultPrice: { type: Number || null },
+        discountedPrice: { type: Number || null },
+        inventory: { type: Number || null }
       }
-    }
+    ],
+    type_price: [
+      {
+        field: { type: Schema.Types.ObjectId, ref: 'CommonField' },
+        defaultPrice: { type: Number || null },
+        discountedPrice: { type: Number || null },
+        inventory: { type: Number || null }
+      }
+    ],
+    original_price: [
+      {
+        field: { type: Schema.Types.ObjectId, ref: 'CommonField' },
+        defaultPrice: { type: Number || null },
+        discountedPrice: { type: Number || null },
+        inventory: { type: Number || null }
+      }
+    ],
+    taste_price: [
+      {
+        field: { type: Schema.Types.ObjectId, ref: 'CommonField' },
+        defaultPrice: { type: Number || null },
+        discountedPrice: { type: Number || null },
+        inventory: { type: Number || null }
+      }
+    ],
+    weitht_price: [
+      {
+        field: { type: Schema.Types.ObjectId, ref: 'CommonField' },
+        defaultPrice: { type: Number || null },
+        discountedPrice: { type: Number || null },
+        inventory: { type: Number || null }
+      }
+    ],
+    image: { type: String },
+    images: [{ type: String }]
   },
   { timestamps: true }
 )
 
-export default model<IProduct>('ProducSchema', productSchema, 'products')
+export default model<new_product>('ProducSchema', productSchema, 'products')

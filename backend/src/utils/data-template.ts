@@ -1,6 +1,6 @@
 import { AuthorityRole } from '~/constants/enum'
 import { Category } from '~/models/interface/category.interface'
-import { Product } from '~/models/interface/product.interface'
+import { Product, new_product } from '~/models/interface/product.interface'
 import { User } from '~/models/interface/user.interface'
 
 export const userTemplate: User = {

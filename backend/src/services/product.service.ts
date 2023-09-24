@@ -3,11 +3,14 @@ import { Request, Response, NextFunction } from 'express'
 import { AppError } from '~/utils/error'
 import ProductSchema from '~/models/product.model'
 import { productTemplate } from '~/utils/data-template'
-import { Product } from '~/models/interface/product.interface'
+import { Product, new_product } from '~/models/interface/product.interface'
 import { generateSlug } from '~/utils/generateSlug'
 import { StatusCode } from '~/constants/enum'
 import validateMongodbId from '~/utils/validateMongodbId'
 import findOptions from '~/utils/findOption'
+import { productSchema } from '~/validator/product.validator'
+import { formErrorMapper } from '~/utils/formErrorMapper'
+import { joiError } from '~/models/interface/common.interface'
 
 const productService = {
   currentPrice: (originalPrice: number, discountPercent: number, discountMoney: number) => {
@@ -16,21 +19,32 @@ const productService = {
 
   createProduct: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const body = req.body as Product
+      const body = req.body as new_product
 
-      const currentPrice = productService.currentPrice(body.originalPrice, body.discountPercent, body.discountMoney)
-      const productSlug = generateSlug(body.name)
+      const { error } = productSchema.validate(body, { abortEarly: false })
 
-      const product: Product = {
-        ...productTemplate,
-        ...body,
-        currentPrice: currentPrice,
-        slug: productSlug
+      if (error) {
+        const formError = formErrorMapper(error as joiError)
+        throw new AppError({
+          httpCode: StatusCode.FORM_ERROR,
+          formError: formError
+        })
       }
 
-      const newProduct = await ProductSchema.create(product)
+      // const currentPrice = productService.currentPrice(body.originalPrice, body.discountPercent, body.discountMoney)
+      // const productSlug = generateSlug(body.name)
 
-      return res.status(StatusCode.CREATED).json(newProduct)
+      // const product: Product = {
+      //   ...productTemplate,
+      //   ...body,
+      //   currentPrice: currentPrice,
+      //   slug: productSlug
+      // }
+
+      // const newProduct = await ProductSchema.create(product)
+
+      // return res.status(StatusCode.CREATED).json(newProduct)
+      return res.json(body)
     } catch (error) {
       next(error)
     }
