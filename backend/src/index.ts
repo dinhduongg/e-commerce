@@ -14,6 +14,7 @@ import userRoute from '~/routes/user.route'
 import productRoute from '~/routes/product.route'
 import categoryRoute from '~/routes/category.route'
 import commonFieldRoute from '~/routes/common.route'
+import priceRoute from '~/routes/price.route'
 
 dotenv.config()
 const app: Express = express()
@@ -33,6 +34,7 @@ app.use('/api/user', userRoute)
 app.use('/api/product', productRoute)
 app.use('/api/category', categoryRoute)
 app.use('/api/common-field', commonFieldRoute)
+app.use('/api/price', priceRoute)
 
 app.use(notFound)
 app.use(errorHandler)

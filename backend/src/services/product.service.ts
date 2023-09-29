@@ -4,22 +4,39 @@ import { AppError } from '~/utils/error'
 import ProductSchema from '~/models/product.model'
 import { productTemplate } from '~/utils/data-template'
 import { Product, new_product } from '~/models/interface/product.interface'
-import { generateSlug } from '~/utils/generateSlug'
+import { calculateDiscounted, generateSlug } from '~/utils/utilities'
 import { StatusCode } from '~/constants/enum'
 import validateMongodbId from '~/utils/validateMongodbId'
 import findOptions from '~/utils/findOption'
 import { productSchema } from '~/validator/product.validator'
 import { formErrorMapper } from '~/utils/formErrorMapper'
 import { joiError } from '~/models/interface/common.interface'
+import { successHandler } from '~/utils/successHandler'
 
 const productService = {
-  currentPrice: (originalPrice: number, discountPercent: number, discountMoney: number) => {
-    return originalPrice - (originalPrice * discountPercent) / 100 - discountMoney
-  },
-
   createProduct: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const body = req.body as new_product
+
+      const slug = generateSlug(body.name.replaceAll('/', ' '))
+      const discounted = calculateDiscounted(
+        body?.amount?.original,
+        body?.discount?.percent ?? 0,
+        body?.discount?.money ?? 0
+      )
+
+      const product = {
+        ...body,
+        discount: {
+          percent: body?.discount?.percent ?? 0,
+          money: body?.discount?.money ?? 0
+        },
+        slug: slug,
+        amount: {
+          ...body.amount,
+          discounted: body.uniquePrice ? discounted : null
+        }
+      }
 
       const { error } = productSchema.validate(body, { abortEarly: false })
 
@@ -31,21 +48,18 @@ const productService = {
         })
       }
 
-      // const currentPrice = productService.currentPrice(body.originalPrice, body.discountPercent, body.discountMoney)
-      // const productSlug = generateSlug(body.name)
+      const newProduct = await ProductSchema.create(product)
 
-      // const product: Product = {
-      //   ...productTemplate,
-      //   ...body,
-      //   currentPrice: currentPrice,
-      //   slug: productSlug
-      // }
+      const options = {
+        statusCode: StatusCode.CREATED,
+        successMsg: 'Thành công',
+        key: 'product',
+        data: newProduct
+      }
 
-      // const newProduct = await ProductSchema.create(product)
-
-      // return res.status(StatusCode.CREATED).json(newProduct)
-      return res.json(body)
+      return successHandler(options, res)
     } catch (error) {
+      console.log(error)
       next(error)
     }
   },
@@ -84,10 +98,25 @@ const productService = {
       const { id } = req.params
       validateMongodbId(id)
 
-      const product = await ProductSchema.findById(id)
+      const product = await ProductSchema.findById(id).populate('prices')
 
-      return res.status(StatusCode.OK).json(product)
+      if (!product) {
+        throw new AppError({
+          httpCode: StatusCode.BAD_REQUEST,
+          description: 'Không tồn tại giá trị'
+        })
+      }
+
+      const options = {
+        statusCode: StatusCode.OK,
+        successMsg: 'Thành công',
+        key: 'prodct',
+        data: product
+      }
+
+      return successHandler(options, res)
     } catch (error) {
+      console.log(error)
       next(error)
     }
   },

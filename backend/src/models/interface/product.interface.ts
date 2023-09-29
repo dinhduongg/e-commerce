@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongoose'
+import { ProductPrice } from './price.interface'
 
 export interface Product {
   _id?: string
@@ -19,21 +20,6 @@ export interface Product {
   }
 }
 
-// new product type
-
-export interface Prices {
-  field: string // _id of common field in database
-  defaultPrice?: number
-  discountedPrice?: number
-  inventory?: number
-}
-
-export type ColorPrice = Prices
-export type TypePrice = Prices
-export type TastePrice = Prices
-export type OriginalPrice = Prices
-export type WeightPrice = Prices
-
 export interface Discount {
   percent: number
   money: number
@@ -52,7 +38,7 @@ export interface new_product {
   name: string
   slug: string
   discount: Discount
-  show_price: ShowPrice
+  amount: ShowPrice
   comment_count: number
   category_id: ObjectId
   tags: string[]
@@ -60,11 +46,8 @@ export interface new_product {
   rating: number
   rating_count: number
   product_property: string[]
-  color_price?: ColorPrice[]
-  type_price?: TypePrice[]
-  taste_price?: TastePrice[]
-  original_price?: OriginalPrice[]
-  weitht_price?: WeightPrice[]
   image: string
   images: string[]
+  prices?: string[]
+  uniquePrice: boolean
 }

@@ -15,7 +15,7 @@ const errorHandler = (error: AppError, req: Request, res: Response, next: NextFu
   const { isOperational, name, ...other } = error
 
   return res.status(statusCode).json({
-    error: other
+    error: error
   })
 }
 

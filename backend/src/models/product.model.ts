@@ -5,71 +5,30 @@ const productSchema: Schema<new_product> = new Schema(
   {
     name: { type: String },
     slug: { type: String },
-    comment_count: { type: Number },
+    uniquePrice: { type: Boolean },
     discount: {
-      money: { type: Number },
-      percent: { type: Number }
+      percent: { type: Number, default: 0 },
+      money: { type: Number, default: 0 }
     },
-    show_price: {
-      min: { type: Number || null },
-      max: { type: Number || null },
-      original: { type: Number || null },
-      discounted: { type: Number || null },
-      inventory: { type: Number || null }
+    amount: {
+      min: { type: Number },
+      max: { type: Number },
+      original: { type: Number },
+      discounted: { type: Number },
+      inventory: { type: Number }
     },
-    category_id: {
-      type: Schema.Types.ObjectId,
-      ref: 'CategorySchema'
-    },
-    tags: [{ type: Schema.Types.ObjectId, ref: 'CategorySchema' }],
+    comment_count: { type: Number },
+    tags: [{ type: String }],
     description: { type: String },
     rating: { type: Number },
     rating_count: { type: Number },
     product_property: [{ type: String }],
-    color_price: [
-      {
-        field: { type: Schema.Types.ObjectId, ref: 'CommonField' },
-        defaultPrice: { type: Number || null },
-        discountedPrice: { type: Number || null },
-        inventory: { type: Number || null }
-      }
-    ],
-    type_price: [
-      {
-        field: { type: Schema.Types.ObjectId, ref: 'CommonField' },
-        defaultPrice: { type: Number || null },
-        discountedPrice: { type: Number || null },
-        inventory: { type: Number || null }
-      }
-    ],
-    original_price: [
-      {
-        field: { type: Schema.Types.ObjectId, ref: 'CommonField' },
-        defaultPrice: { type: Number || null },
-        discountedPrice: { type: Number || null },
-        inventory: { type: Number || null }
-      }
-    ],
-    taste_price: [
-      {
-        field: { type: Schema.Types.ObjectId, ref: 'CommonField' },
-        defaultPrice: { type: Number || null },
-        discountedPrice: { type: Number || null },
-        inventory: { type: Number || null }
-      }
-    ],
-    weitht_price: [
-      {
-        field: { type: Schema.Types.ObjectId, ref: 'CommonField' },
-        defaultPrice: { type: Number || null },
-        discountedPrice: { type: Number || null },
-        inventory: { type: Number || null }
-      }
-    ],
     image: { type: String },
-    images: [{ type: String }]
+    images: [{ type: String }],
+    category_id: { type: Schema.Types.ObjectId, ref: 'CategorySchema' },
+    prices: [{ type: Schema.Types.ObjectId, ref: 'PriceSchema' }]
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 )
 
 export default model<new_product>('ProducSchema', productSchema, 'products')

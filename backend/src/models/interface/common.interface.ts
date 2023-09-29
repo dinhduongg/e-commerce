@@ -19,6 +19,7 @@ export interface joiError {
 }
 
 export interface CommonField {
+  _id?: string
   key: CommonFieldEnum
   name: string
   shortName?: string
