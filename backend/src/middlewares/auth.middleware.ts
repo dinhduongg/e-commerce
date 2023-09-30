@@ -20,7 +20,7 @@ const authMiddleware = {
         }
       } else {
         throw new AppError({
-          httpCode: StatusCode.UNAUTHORZIED,
+          status: StatusCode.UNAUTHORZIED,
           description: 'Not authenticated'
         })
       }
@@ -44,13 +44,13 @@ const authMiddleware = {
           }
         } catch (error) {
           throw new AppError({
-            httpCode: StatusCode.FORBIDDEN,
+            status: StatusCode.BAD_REQUEST,
             description: 'Bạn đã hết phiên đăng nhập. Tiến hành đăng xuất'
           })
         }
       } else {
         throw new AppError({
-          httpCode: StatusCode.UNAUTHORZIED,
+          status: StatusCode.UNAUTHORZIED,
           description: 'Not authenticated'
         })
       }
@@ -74,13 +74,13 @@ const authMiddleware = {
           }
         } catch (error) {
           throw new AppError({
-            httpCode: StatusCode.FORBIDDEN,
+            status: StatusCode.FORBIDDEN,
             description: 'AccessToken hết hạn, đang tiến hành refresh'
           })
         }
       } else {
         throw new AppError({
-          httpCode: StatusCode.UNAUTHORZIED,
+          status: StatusCode.UNAUTHORZIED,
           description: 'Not authenticated'
         })
       }
@@ -94,7 +94,7 @@ const authMiddleware = {
       const user = req.user
 
       if (user && user.authority !== AuthorityRole.ADMIN) {
-        throw new AppError({ httpCode: StatusCode.UNAUTHORZIED, description: 'Not admin' })
+        throw new AppError({ status: StatusCode.UNAUTHORZIED, description: 'Not admin' })
       } else {
         next()
       }

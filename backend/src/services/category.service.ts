@@ -32,7 +32,7 @@ const categoryService = {
 
       if (!category) {
         throw new AppError({
-          httpCode: StatusCode.BAD_REQUEST,
+          status: StatusCode.BAD_REQUEST,
           description: 'Danh mục không tồn tại'
         })
       }
@@ -59,7 +59,7 @@ const categoryService = {
       if (error) {
         const formError = CategoryformErrorMapper(error as joiError)
         throw new AppError({
-          httpCode: StatusCode.FORM_ERROR,
+          status: StatusCode.FORM_ERROR,
           formError: formError
         })
       }
@@ -76,7 +76,7 @@ const categoryService = {
 
       if (check) {
         throw new AppError({
-          httpCode: StatusCode.FORM_ERROR,
+          status: StatusCode.FORM_ERROR,
           formError: [{ name: 'Tên này đã tồn tại' }]
         })
       }
@@ -105,7 +105,7 @@ const categoryService = {
 
       if (!check) {
         throw new AppError({
-          httpCode: StatusCode.BAD_REQUEST,
+          status: StatusCode.BAD_REQUEST,
           description: 'Danh mục không tồn tại'
         })
       }
@@ -115,7 +115,7 @@ const categoryService = {
       if (error) {
         const formError = CategoryformErrorMapper(error as joiError)
         throw new AppError({
-          httpCode: StatusCode.FORM_ERROR,
+          status: StatusCode.FORM_ERROR,
           formError: formError
         })
       }
@@ -144,7 +144,7 @@ const categoryService = {
       const { id } = req.params
       await CategorySchema.findByIdAndDelete(id).catch(() => {
         throw new AppError({
-          httpCode: StatusCode.BAD_REQUEST,
+          status: StatusCode.BAD_REQUEST,
           description: 'Có lỗi khi xóa'
         })
       })

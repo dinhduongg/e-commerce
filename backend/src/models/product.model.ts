@@ -13,9 +13,9 @@ const productSchema: Schema<new_product> = new Schema(
     amount: {
       min: { type: Number },
       max: { type: Number },
-      original: { type: Number },
-      discounted: { type: Number },
-      inventory: { type: Number }
+      original: { type: Number, default: 0 },
+      discounted: { type: Number, default: 0 },
+      inventory: { type: Number, default: 0 }
     },
     comment_count: { type: Number },
     tags: [{ type: String }],
@@ -31,4 +31,4 @@ const productSchema: Schema<new_product> = new Schema(
   { timestamps: true, versionKey: false }
 )
 
-export default model<new_product>('ProducSchema', productSchema, 'products')
+export default model<new_product>('ProductSchema', productSchema, 'products')

@@ -28,7 +28,7 @@ const authService = {
       if (error) {
         const formError = formErrorMapper(error as joiError)
         throw new AppError({
-          httpCode: StatusCode.FORM_ERROR,
+          status: StatusCode.FORM_ERROR,
           formError: formError
         })
       }
@@ -44,7 +44,7 @@ const authService = {
 
       if (findUser) {
         throw new AppError({
-          httpCode: StatusCode.FORM_ERROR,
+          status: StatusCode.FORM_ERROR,
           formError: [
             {
               email: 'Email đã tồn tại'
@@ -77,7 +77,7 @@ const authService = {
       if (error) {
         const formError = formErrorMapper(error as joiError)
         throw new AppError({
-          httpCode: StatusCode.FORM_ERROR,
+          status: StatusCode.FORM_ERROR,
           formError: formError
         })
       }
@@ -86,7 +86,7 @@ const authService = {
 
       if (!foundUser) {
         throw new AppError({
-          httpCode: StatusCode.FORM_ERROR,
+          status: StatusCode.FORM_ERROR,
           formError: [{ email: 'Email không chính xác' }]
         })
       }
@@ -95,7 +95,7 @@ const authService = {
 
       if (!isMatch) {
         throw new AppError({
-          httpCode: StatusCode.FORM_ERROR,
+          status: StatusCode.FORM_ERROR,
           formError: [{ password: 'Mật khẩu không chính xác' }]
         })
       }
@@ -180,7 +180,7 @@ const authService = {
       if (error) {
         const formError = formErrorMapper(error as joiError)
         throw new AppError({
-          httpCode: StatusCode.FORM_ERROR,
+          status: StatusCode.FORM_ERROR,
           formError: formError
         })
       }
@@ -189,7 +189,7 @@ const authService = {
 
       if (!user) {
         throw new AppError({
-          httpCode: StatusCode.FORM_ERROR,
+          status: StatusCode.FORM_ERROR,
           formError: [{ email: 'Email không tồn tại' }]
         })
       }
@@ -232,7 +232,7 @@ const authService = {
       if (error) {
         const formError = formErrorMapper(error as joiError)
         throw new AppError({
-          httpCode: StatusCode.FORM_ERROR,
+          status: StatusCode.FORM_ERROR,
           formError: formError
         })
       }
@@ -241,7 +241,7 @@ const authService = {
 
       if (date > expried) {
         throw new AppError({
-          httpCode: StatusCode.BAD_REQUEST,
+          status: StatusCode.BAD_REQUEST,
           description: 'Thời gian đổi mật khẩu đã hết.'
         })
       }
@@ -250,7 +250,7 @@ const authService = {
 
       if (!result) {
         throw new AppError({
-          httpCode: StatusCode.INTERNAL_SERVER,
+          status: StatusCode.INTERNAL_SERVER,
           description: 'Có lỗi mời thử lại'
         })
       }

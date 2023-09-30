@@ -1,26 +1,36 @@
-import { Request, Response, NextFunction } from 'express'
+import { NextFunction, Request, Response } from 'express'
 
-import { AppError } from '~/utils/error'
-import ProductSchema from '~/models/product.model'
-import { productTemplate } from '~/utils/data-template'
-import { Product, new_product } from '~/models/interface/product.interface'
-import { calculateDiscounted, generateSlug } from '~/utils/utilities'
 import { StatusCode } from '~/constants/enum'
-import validateMongodbId from '~/utils/validateMongodbId'
-import findOptions from '~/utils/findOption'
-import { productSchema } from '~/validator/product.validator'
-import { formErrorMapper } from '~/utils/formErrorMapper'
 import { joiError } from '~/models/interface/common.interface'
+import { new_product } from '~/models/interface/product.interface'
+import PriceSchema from '~/models/price.model'
+import ProductSchema from '~/models/product.model'
+import { AppError } from '~/utils/error'
+import findOptions from '~/utils/findOption'
+import { formErrorMapper } from '~/utils/formErrorMapper'
 import { successHandler } from '~/utils/successHandler'
+import { calculateDiscounted, generateSlug } from '~/utils/utilities'
+import validateMongodbId from '~/utils/validateMongodbId'
+import { productSchema } from '~/validator/product.validator'
 
 const productService = {
   createProduct: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const body = req.body as new_product
 
+      const { error } = productSchema.validate(body, { abortEarly: false })
+
+      if (error) {
+        const formError = formErrorMapper(error as joiError)
+        throw new AppError({
+          status: StatusCode.FORM_ERROR,
+          formError: formError
+        })
+      }
+
       const slug = generateSlug(body.name.replaceAll('/', ' '))
       const discounted = calculateDiscounted(
-        body?.amount?.original,
+        body?.amount?.original ?? 0,
         body?.discount?.percent ?? 0,
         body?.discount?.money ?? 0
       )
@@ -38,16 +48,6 @@ const productService = {
         }
       }
 
-      const { error } = productSchema.validate(body, { abortEarly: false })
-
-      if (error) {
-        const formError = formErrorMapper(error as joiError)
-        throw new AppError({
-          httpCode: StatusCode.FORM_ERROR,
-          formError: formError
-        })
-      }
-
       const newProduct = await ProductSchema.create(product)
 
       const options = {
@@ -59,7 +59,6 @@ const productService = {
 
       return successHandler(options, res)
     } catch (error) {
-      console.log(error)
       next(error)
     }
   },
@@ -69,13 +68,29 @@ const productService = {
       const { id } = req.params
       const body = req.body
 
-      if (body.name) {
-        body.slug = generateSlug(body.name)
+      body.slug = generateSlug(body.name.replaceAll('/', ' '))
+
+      if (body.uniquePrice) {
+        body.amount = {
+          ...body.amount,
+          discounted: calculateDiscounted(
+            body?.amount?.original ?? 0,
+            body?.discount?.percent ?? 0,
+            body?.discount?.money ?? 0
+          )
+        }
       }
 
       const productUpdate = await ProductSchema.findByIdAndUpdate(id, body, { new: true })
 
-      return res.status(StatusCode.CREATED).json(productUpdate)
+      const options = {
+        statusCode: StatusCode.OK,
+        successMsg: 'Thành công',
+        key: 'product',
+        data: productUpdate
+      }
+
+      return successHandler(options, res)
     } catch (error) {
       next(error)
     }
@@ -86,8 +101,19 @@ const productService = {
       const { id } = req.params
 
       await ProductSchema.findByIdAndDelete(id)
+      await PriceSchema.deleteMany({ product_id: id }).catch(() => {
+        throw new AppError({
+          status: StatusCode.BAD_REQUEST,
+          description: 'Lỗi khi xóa giá sản phẩm'
+        })
+      })
 
-      return res.status(StatusCode.OK).json({ message: 'Xóa product thành công' })
+      const options = {
+        statusCode: StatusCode.OK,
+        successMsg: 'Thành công'
+      }
+
+      return successHandler(options, res)
     } catch (error) {
       next(error)
     }
@@ -96,13 +122,27 @@ const productService = {
   getProduct: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params
+
+      if (id === 'all') {
+        const products = await ProductSchema.find().populate('prices')
+
+        const options = {
+          statusCode: StatusCode.OK,
+          successMsg: 'Thành công',
+          key: 'prodcts',
+          data: products
+        }
+
+        return successHandler(options, res)
+      }
+
       validateMongodbId(id)
 
       const product = await ProductSchema.findById(id).populate('prices')
 
       if (!product) {
         throw new AppError({
-          httpCode: StatusCode.BAD_REQUEST,
+          status: StatusCode.BAD_REQUEST,
           description: 'Không tồn tại giá trị'
         })
       }
@@ -116,7 +156,6 @@ const productService = {
 
       return successHandler(options, res)
     } catch (error) {
-      console.log(error)
       next(error)
     }
   },

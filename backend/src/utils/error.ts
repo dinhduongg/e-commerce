@@ -4,7 +4,7 @@ import { formError } from '~/models/interface/common.interface'
 interface AppErrorArgs {
   name?: string
   field?: string
-  httpCode: StatusCode
+  status: StatusCode
   description?: string
   isOperational?: boolean
   formError?: formError[]
@@ -12,7 +12,7 @@ interface AppErrorArgs {
 
 export class AppError extends Error {
   public readonly name: string
-  public readonly httpCode: StatusCode
+  public readonly status: StatusCode
   public readonly isOperational: boolean = true
   public readonly field: string | undefined
   public readonly formError: formError[] | undefined
@@ -25,13 +25,13 @@ export class AppError extends Error {
 
     this.name = args.name || 'Error'
     this.description = args.description
-    this.httpCode = args.httpCode
+    this.status = args.status
 
     if (args.isOperational !== undefined) {
       this.isOperational = args.isOperational
     }
 
-    if (args.httpCode === 422) {
+    if (args.status === 422) {
       this.field = args.field
       this.formError = args.formError
     }

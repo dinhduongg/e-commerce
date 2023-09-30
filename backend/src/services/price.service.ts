@@ -22,7 +22,7 @@ const priceService = {
       if (error) {
         const formError = formErrorMapper(error as joiError)
         throw new AppError({
-          httpCode: StatusCode.FORM_ERROR,
+          status: StatusCode.FORM_ERROR,
           formError: formError
         })
       }
@@ -31,7 +31,7 @@ const priceService = {
       const checkExist = await PriceSchema.findOne({ product_id: body.product_id, key: body.key })
       if (checkExist) {
         throw new AppError({
-          httpCode: StatusCode.BAD_REQUEST,
+          status: StatusCode.BAD_REQUEST,
           description: `Đã tồn tại giá cho ${checkExist.title}`
         })
       }
@@ -142,7 +142,7 @@ const priceService = {
 
       await PriceSchema.findByIdAndDelete(id).catch(() => {
         throw new AppError({
-          httpCode: StatusCode.BAD_REQUEST,
+          status: StatusCode.BAD_REQUEST,
           description: 'Lỗi khi xóa'
         })
       })

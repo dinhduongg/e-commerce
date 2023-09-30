@@ -18,7 +18,7 @@ const commonFieldService = {
       if (error) {
         const formError = formErrorMapper(error as joiError)
         throw new AppError({
-          httpCode: StatusCode.FORM_ERROR,
+          status: StatusCode.FORM_ERROR,
           formError: formError
         })
       }
@@ -49,7 +49,7 @@ const commonFieldService = {
 
       if (!field) {
         throw new AppError({
-          httpCode: StatusCode.BAD_REQUEST,
+          status: StatusCode.BAD_REQUEST,
           description: 'Không tồn tại giá trị'
         })
       }
@@ -107,7 +107,7 @@ const commonFieldService = {
       const { id } = req.params
       await CommonSchema.findByIdAndDelete(id).catch(() => {
         throw new AppError({
-          httpCode: StatusCode.BAD_REQUEST,
+          status: StatusCode.BAD_REQUEST,
           description: 'Có lỗi khi xóa'
         })
       })

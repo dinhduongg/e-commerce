@@ -11,7 +11,7 @@ declare global {
 
 declare module 'jsonwebtoken' {
   export interface JwtPayload {
-    _id: string
+    id: string
     authority: AuthorityRole
   }
 }

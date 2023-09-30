@@ -73,13 +73,13 @@ const userService = {
     try {
       const { refreshToken } = req.cookies
       if (!refreshToken) {
-        throw new AppError({ httpCode: StatusCode.BAD_REQUEST, description: 'Không có refresh token ở cookies' })
+        throw new AppError({ status: StatusCode.BAD_REQUEST, description: 'Không có refresh token ở cookies' })
       }
 
       const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET as string) as JwtPayload
 
       if (!decoded) {
-        throw new AppError({ httpCode: StatusCode.BAD_REQUEST, description: 'Có lỗi trong quá trình refresh token' })
+        throw new AppError({ status: StatusCode.BAD_REQUEST, description: 'Có lỗi trong quá trình refresh token' })
       }
 
       const accessToken = generateAccessToken(decoded.id, decoded.authority === AuthorityRole.ADMIN ? '365d' : '10m')

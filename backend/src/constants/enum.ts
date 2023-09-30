@@ -32,3 +32,8 @@ export enum CommonFieldEnum {
   original = 'original',
   weight = 'weight'
 }
+
+export enum ObjectName {
+  product = 'product',
+  article = 'article'
+}
