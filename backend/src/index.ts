@@ -16,6 +16,7 @@ import categoryRoute from '~/routes/category.route'
 import commonFieldRoute from '~/routes/common.route'
 import priceRoute from '~/routes/price.route'
 import favoriteRoute from '~/routes/favorite.route'
+import cartRoute from '~/routes/cart.route'
 
 dotenv.config()
 const app: Express = express()
@@ -37,6 +38,7 @@ app.use('/api/category', categoryRoute)
 app.use('/api/common-field', commonFieldRoute)
 app.use('/api/price', priceRoute)
 app.use('/api/favorite', favoriteRoute)
+app.use('/api/cart', cartRoute)
 
 app.use(notFound)
 app.use(errorHandler)

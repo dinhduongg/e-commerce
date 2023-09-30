@@ -9,6 +9,10 @@ const favoriteController = {
 
   get: async (req: Request, res: Response, next: NextFunction) => {
     await favoriteService.get(req, res, next)
+  },
+
+  store: async (req: Request, res: Response, next: NextFunction) => {
+    await favoriteService.store(req, res, next)
   }
 }
 

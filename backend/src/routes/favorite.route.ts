@@ -7,5 +7,6 @@ const router: Router = Router()
 
 router.post('/add', favoriteController.create) // use for add and delete favorite
 router.get('/favorites', authMiddleware.verifyAccessToken, favoriteController.get)
+router.post('/store', authMiddleware.verifyAccessToken, favoriteController.store)
 
 export default router

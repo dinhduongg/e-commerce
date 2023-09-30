@@ -122,6 +122,68 @@ const favoriteService = {
     } catch (error) {
       next(error)
     }
+  },
+
+  store: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const user = req.user
+      let { favorites } = req.body
+
+      if (!Array.isArray(favorites)) {
+        throw new AppError({
+          status: StatusCode.BAD_REQUEST,
+          description: 'Lỗi khi truyền dữ liệu'
+        })
+      }
+
+      favorites = favorites
+        .filter((favorite) => !favorite.user_id)
+        .map((favorite: FavoriteBody) => ({
+          ...favorite,
+          user_id: user._id,
+          ref_path: favorite.object_name === ObjectName.product ? 'ProductSchema' : 'ArticleSchema',
+          favoriteable: favorite.object_id
+        }))
+
+      await FavoriteSchema.insertMany(favorites).catch(() => {
+        throw new AppError({
+          status: StatusCode.BAD_REQUEST,
+          description: 'Lỗi khi thêm yêu thích vào database'
+        })
+      })
+
+      const favoriteProducts = await FavoriteSchema.find(
+        {
+          user_id: user._id,
+          object_name: ObjectName.product
+        },
+        { createdAt: 0, updatedAt: 0 }
+      ).populate('favoriteable', {
+        _id: 1,
+        name: 1,
+        slug: 1,
+        amount: 1,
+        image: 1
+      })
+
+      // const favoriteArticles = await FavoriteSchema.find({
+      //   user_id: user._id,
+      //   object_name: ObjectName.article
+      // }).populate('favoriteable')
+
+      const options: options = {
+        statusCode: StatusCode.OK,
+        key: 'favorites',
+        data: {
+          products: favoriteProducts
+          // articles: favoriteArticles
+        }
+      }
+
+      return successHandler(options, res)
+    } catch (error) {
+      next(error)
+    }
   }
 }
 
