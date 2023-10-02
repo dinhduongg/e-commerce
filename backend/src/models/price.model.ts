@@ -10,7 +10,8 @@ const priceSchema = new Schema<ProductPrice>(
     prices: [
       {
         _id: false,
-        propertyName: { type: String },
+        property_name: { type: String },
+        property_slug: { type: String },
         original: { type: Number },
         discounted: { type: Number },
         inventory: { type: Number }
@@ -20,4 +21,4 @@ const priceSchema = new Schema<ProductPrice>(
   { timestamps: true, versionKey: false }
 )
 
-export default model<ProductPrice>('PriceSchema', priceSchema, 'product-prices')
+export default model<ProductPrice>('PriceSchema', priceSchema, 'prices')

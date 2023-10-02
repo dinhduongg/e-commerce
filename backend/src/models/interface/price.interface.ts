@@ -3,7 +3,8 @@ import { CommonFieldEnum } from '~/constants/enum'
 
 export interface Price {
   // Dành cho trường hợp sản phẩm nhiều kiểu dáng nhiều giá
-  propertyName: string // vd: key: color => propertyName: Trắng | Xanh | Vàng | Đỏ
+  property_name: string // vd: key: color => propertyName: Trắng | Xanh | Vàng | Đỏ
+  property_slug: string
   original: number
   discounted: number
   inventory: number

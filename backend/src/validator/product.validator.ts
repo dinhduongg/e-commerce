@@ -58,7 +58,8 @@ export const priceSchema = Joi.object<ProductPrice>({
   title: Joi.string().required().messages({ 'any.required': 'Không được để trống' }),
   prices: Joi.array()
     .items({
-      propertyName: Joi.string().label('propertyName').required().messages({ 'any.required': 'Không được để trống' }),
+      property_name: Joi.string().label('property_name').required().messages({ 'any.required': 'Không được để trống' }),
+      property_slug: Joi.string().label('property_slug').required().messages({ 'any.required': 'Không được để trống' }),
       // original: Joi.number().label('original').required().messages({ 'any.required': 'Không được để trống' }),
       original: Joi.optional(),
       inventory: Joi.number().label('inventory').required().messages({ 'any.required': 'Không được để trống' })
