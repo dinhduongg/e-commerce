@@ -15,3 +15,15 @@ export interface Category {
   commom_field: string
   // crumbs: crumb[]
 }
+
+export interface NewCategory {
+  _id?: string
+  parent_id?: string
+  image?: string
+  name: string
+  slug: string
+  show_home: boolean
+  level: number
+  sorted: number
+  featured: boolean
+}
